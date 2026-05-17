@@ -1,50 +1,91 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: 0.0.0 → 1.0.0
+- Added principles: Test-First, Simplicity, Observability, Security, Clean Architecture
+- Added sections: Technology Standards, Development Workflow
+- Added: Governance rules
+- Templates requiring updates:
+  - .specify/templates/plan-template.md ✅ no changes needed (generic)
+  - .specify/templates/spec-template.md ✅ no changes needed (generic)
+  - .specify/templates/tasks-template.md ✅ no changes needed (generic)
+- Follow-up TODOs: none
+-->
+
+# Arcanjus Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Test-First
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+All feature work MUST begin with failing tests that define expected behavior
+before implementation begins. Red-Green-Refactor cycle is enforced:
+tests written and failing first, then minimal implementation to pass,
+then refactor. No code merges without passing test coverage for the
+changed behavior.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Simplicity
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Start with the simplest solution that meets requirements. YAGNI applies:
+do not build for hypothetical future needs. Prefer fewer abstractions,
+flat structures, and direct code paths. Complexity MUST be justified
+in writing (plan or PR description) before introduction.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Observability
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+All services MUST emit structured logs (JSON) with correlation IDs.
+Errors MUST surface clearly via stderr or structured error responses.
+Health checks and basic metrics endpoints are required for any deployed
+service. Debug-ability takes priority over cleverness.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Security
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+OWASP Top 10 vulnerabilities MUST be addressed by design. Input
+validation at system boundaries is mandatory. Secrets MUST NOT appear
+in code, logs, or version control. Dependencies MUST be kept up to date
+and audited for known vulnerabilities.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Clean Architecture
+
+Business logic MUST be independent of frameworks, databases, and
+delivery mechanisms. Dependencies point inward: outer layers depend on
+inner layers, never the reverse. Each module MUST have a single clear
+responsibility. Interfaces define contracts between layers.
+
+## Technology Standards
+
+- **Language**: TypeScript (strict mode enabled)
+- **Runtime**: Node.js (LTS)
+- **Package Manager**: npm or pnpm (consistent across project)
+- **Linting**: ESLint with strict rules
+- **Formatting**: Prettier (enforced via pre-commit)
+- **Testing**: Vitest or Jest for unit/integration tests
+- **Type Safety**: No `any` types without explicit justification
+
+## Development Workflow
+
+- Feature branches follow naming convention: `###-feature-name`
+- All changes require passing CI before merge
+- Code review is mandatory for production-bound changes
+- Commits MUST be atomic and descriptive (conventional commits preferred)
+- Breaking changes MUST be documented in the PR description
+- Deploy from main branch only after all checks pass
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution is the highest-authority document for project decisions.
+All PRs, code reviews, and architectural choices MUST comply with the
+principles above. Deviations require explicit justification and team
+consensus.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Amendment Process**:
+1. Propose change via PR modifying this file
+2. Document rationale for the change
+3. Version bump according to semver (MAJOR for principle removal/redefinition,
+   MINOR for additions, PATCH for clarifications)
+4. Update dependent templates if principle names or requirements change
+
+**Compliance Review**: Each PR review MUST verify alignment with
+applicable principles. Reviewers SHOULD cite the relevant principle
+when requesting changes.
+
+**Version**: 1.0.0 | **Ratified**: 2026-05-16 | **Last Amended**: 2026-05-16

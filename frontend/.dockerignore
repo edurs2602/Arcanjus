@@ -1,0 +1,7 @@
+node_modules/
+.git/
+.next/
+coverage/
+*.log
+.env*
+pnpm-workspace.yaml

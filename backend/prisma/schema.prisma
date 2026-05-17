@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shirt {
+  id          String       @id @default(uuid())
+  name        String       @db.VarChar(200)
+  description String       @db.Text
+  price       Decimal      @db.Decimal(10, 2)
+  sizes       String[]
+  color       String
+  category    String
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  images      ShirtImage[]
+  clicks      ProductClickEvent[]
+
+  @@index([active, category])
+  @@index([active, color])
+}
+
+model ShirtImage {
+  id        String  @id @default(uuid())
+  shirtId   String
+  url       String
+  alt       String
+  sortOrder Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  shirt Shirt @relation(fields: [shirtId], references: [id], onDelete: Cascade)
+
+  @@index([shirtId, sortOrder])
+}
+
+model StoreInfo {
+  id           String   @id @default(uuid())
+  name         String
+  address      String
+  city         String
+  state        String
+  zipCode      String
+  phone        String
+  latitude     Decimal
+  longitude    Decimal
+  hoursJson    Json
+  aboutTitle   String
+  aboutContent String   @db.Text
+  updatedAt    DateTime @updatedAt
+}
+
+model AdminUser {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
+}
+
+model PageViewEvent {
+  id         String   @id @default(uuid())
+  page       String
+  referrer   String?
+  deviceType String
+  timestamp  DateTime @default(now())
+
+  @@index([timestamp])
+}
+
+model ProductClickEvent {
+  id         String   @id @default(uuid())
+  shirtId    String?
+  actionType String
+  timestamp  DateTime @default(now())
+
+  shirt Shirt? @relation(fields: [shirtId], references: [id], onDelete: SetNull)
+
+  @@index([timestamp])
+  @@index([shirtId])
+}
