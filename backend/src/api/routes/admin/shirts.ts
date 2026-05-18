@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { listAllShirts, createShirt, updateShirt, deactivateShirt } from '../../../services/adminShirtService.js';
+import { processShirtPipeline } from '../../../services/aiPipelineService.js';
+import { prisma } from '../../../config/database.js';
 
 export const adminShirtsRouter = Router();
 
@@ -62,6 +64,38 @@ adminShirtsRouter.delete('/shirts/:id', async (req, res, next) => {
   try {
     await deactivateShirt(req.params.id!);
     res.json({ status: 'deactivated' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+adminShirtsRouter.get('/shirts/:id/pipeline-status', async (req, res, next) => {
+  try {
+    const shirt = await prisma.shirt.findUnique({
+      where: { id: req.params.id! },
+      select: { pipelineStatus: true, pipelineError: true, aiColor: true, aiType: true, aiDescription: true },
+    });
+    if (!shirt) {
+      res.status(404).json({ error: 'Shirt not found' });
+      return;
+    }
+    res.json(shirt);
+  } catch (error) {
+    next(error);
+  }
+});
+
+adminShirtsRouter.post('/shirts/:id/reprocess', async (req, res, next) => {
+  try {
+    const shirt = await prisma.shirt.findUnique({ where: { id: req.params.id! } });
+    if (!shirt) {
+      res.status(404).json({ error: 'Shirt not found' });
+      return;
+    }
+    processShirtPipeline(shirt.id).catch((err) =>
+      console.error(`[AI Pipeline] Reprocess failed for ${shirt.id}:`, err),
+    );
+    res.json({ status: 'processing', message: 'Pipeline triggered' });
   } catch (error) {
     next(error);
   }

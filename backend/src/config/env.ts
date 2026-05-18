@@ -12,6 +12,11 @@ const envSchema = z.object({
   S3_ENDPOINT: z.string().optional(),
   PORT: z.coerce.number().default(3001),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  // AI Pipeline
+  AI_PIPELINE_ENABLED: z.coerce.boolean().default(false),
+  VMAKE_API_KEY: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  PUBLIC_BACKEND_URL: z.string().default('http://localhost:3001'),
 });
 
 export type Env = z.infer<typeof envSchema>;

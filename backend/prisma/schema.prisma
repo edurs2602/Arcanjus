@@ -24,17 +24,22 @@ model Collection {
 }
 
 model Shirt {
-  id           String       @id @default(uuid())
-  name         String       @db.VarChar(200)
-  description  String       @db.Text
-  price        Decimal      @db.Decimal(10, 2)
-  sizes        String[]
-  color        String
-  category     String
-  active       Boolean      @default(true)
-  collectionId String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id              String       @id @default(uuid())
+  name            String       @db.VarChar(200)
+  description     String       @db.Text
+  price           Decimal      @db.Decimal(10, 2)
+  sizes           String[]
+  color           String
+  category        String
+  active          Boolean      @default(true)
+  collectionId    String?
+  pipelineStatus  String       @default("pending")
+  pipelineError   String?
+  aiColor         String?
+  aiType          String?
+  aiDescription   String?      @db.Text
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 
   collection  Collection?  @relation(fields: [collectionId], references: [id], onDelete: SetNull)
   images      ShirtImage[]
@@ -46,12 +51,14 @@ model Shirt {
 }
 
 model ShirtImage {
-  id        String  @id @default(uuid())
-  shirtId   String
-  url       String
-  alt       String
-  sortOrder Int     @default(0)
-  isPrimary Boolean @default(false)
+  id            String  @id @default(uuid())
+  shirtId       String
+  url           String
+  alt           String
+  sortOrder     Int     @default(0)
+  isPrimary     Boolean @default(false)
+  isAiGenerated Boolean @default(false)
+  modelName     String?
 
   shirt Shirt @relation(fields: [shirtId], references: [id], onDelete: Cascade)
 

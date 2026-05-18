@@ -13,6 +13,18 @@ interface ShirtItem {
   category: string;
   active: boolean;
   clickCount: number;
+  pipelineStatus: string;
+}
+
+function PipelineBadge({ status }: { status: string }) {
+  const config: Record<string, { label: string; className: string }> = {
+    pending: { label: 'Pendente', className: 'bg-yellow-100 text-yellow-700' },
+    processing: { label: 'Processando', className: 'bg-blue-100 text-blue-700 animate-pulse' },
+    complete: { label: 'Completo', className: 'bg-green-100 text-green-700' },
+    failed: { label: 'Falhou', className: 'bg-red-100 text-red-700' },
+  };
+  const { label, className } = config[status] ?? config.pending;
+  return <span className={`rounded-full px-2 py-0.5 text-xs ${className}`}>{label}</span>;
 }
 
 export default function AdminCamisasPage() {
@@ -59,6 +71,7 @@ export default function AdminCamisasPage() {
               <th className="px-4 py-3 font-medium text-primary-light">Preço</th>
               <th className="px-4 py-3 font-medium text-primary-light">Cor</th>
               <th className="px-4 py-3 font-medium text-primary-light">Status</th>
+              <th className="px-4 py-3 font-medium text-primary-light">Pipeline IA</th>
               <th className="px-4 py-3 font-medium text-primary-light">Cliques</th>
               <th className="px-4 py-3 font-medium text-primary-light">Ações</th>
             </tr>
@@ -79,6 +92,9 @@ export default function AdminCamisasPage() {
                   >
                     {shirt.active ? 'Ativa' : 'Inativa'}
                   </span>
+                </td>
+                <td className="px-4 py-3">
+                  <PipelineBadge status={shirt.pipelineStatus} />
                 </td>
                 <td className="px-4 py-3">{shirt.clickCount}</td>
                 <td className="px-4 py-3">

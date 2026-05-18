@@ -1,5 +1,6 @@
 import { prisma } from '../config/database.js';
 import { uploadImage, deleteImage } from './storageService.js';
+import { processShirtPipeline } from './aiPipelineService.js';
 
 interface CreateShirtInput {
   name: string;
@@ -58,6 +59,7 @@ export async function listAllShirts(params: {
       sizes: shirt.sizes,
       active: shirt.active,
       clickCount: shirt._count.clicks,
+      pipelineStatus: shirt.pipelineStatus,
       primaryImage: shirt.images[0] ? { url: shirt.images[0].url, alt: shirt.images[0].alt } : null,
       createdAt: shirt.createdAt.toISOString(),
     })),
@@ -86,6 +88,11 @@ export async function createShirt(input: CreateShirtInput) {
     },
     include: { images: true },
   });
+
+  // Fire-and-forget: trigger AI pipeline in background
+  processShirtPipeline(shirt.id).catch((err) =>
+    console.error(`[AI Pipeline] Background trigger failed for ${shirt.id}:`, err),
+  );
 
   return shirt;
 }

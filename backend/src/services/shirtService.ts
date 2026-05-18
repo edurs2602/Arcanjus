@@ -91,6 +91,7 @@ export async function getShirtById(id: string) {
       alt: img.alt,
       isPrimary: img.isPrimary,
       sortOrder: img.sortOrder,
+      isAiGenerated: img.isAiGenerated,
     })),
     createdAt: shirt.createdAt.toISOString(),
   };

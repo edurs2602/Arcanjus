@@ -32,6 +32,10 @@ services:
       UPLOADS_DIR: /app/uploads
       PORT: 3001
       NODE_ENV: development
+      AI_PIPELINE_ENABLED: ${AI_PIPELINE_ENABLED:-false}
+      VMAKE_API_KEY: ${VMAKE_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      PUBLIC_BACKEND_URL: http://localhost:3001
     depends_on:
       postgres:
         condition: service_healthy

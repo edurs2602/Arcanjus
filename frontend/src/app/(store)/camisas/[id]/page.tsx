@@ -11,7 +11,7 @@ interface ShirtDetail {
   color: string;
   category: string;
   sizes: string[];
-  images: Array<{ id: string; url: string; alt: string; isPrimary: boolean; sortOrder: number }>;
+  images: Array<{ id: string; url: string; alt: string; isPrimary: boolean; sortOrder: number; isAiGenerated: boolean }>;
   createdAt: string;
 }
 
@@ -126,6 +126,35 @@ export default async function ShirtDetailPage({ params }: PageProps) {
           </div>
         </div>
       </div>
+
+      {/* "Como fica" — AI-generated model photos */}
+      {shirt.images.filter((img) => img.isAiGenerated).length > 0 && (
+        <div className="luxury-container pb-20">
+          <div className="mb-10 text-center">
+            <p className="luxury-subheading">Visualização</p>
+            <h2 className="mt-3 font-display text-2xl font-normal text-primary md:text-3xl">
+              Como Fica
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {shirt.images
+              .filter((img) => img.isAiGenerated)
+              .map((img) => {
+                const imageBase = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') ?? 'http://localhost:3001';
+                const src = img.url.startsWith('http') ? img.url : `${imageBase}${img.url}`;
+                return (
+                  <div key={img.id} className="aspect-[3/4] overflow-hidden bg-brand-50">
+                    <img
+                      src={src}
+                      alt={img.alt}
+                      className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

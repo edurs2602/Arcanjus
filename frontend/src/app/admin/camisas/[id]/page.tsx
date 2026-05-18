@@ -40,10 +40,12 @@ export default function AdminShirtEditPage() {
     collectionId: '',
   });
   const [images, setImages] = useState<File[]>([]);
-  const [existingImages, setExistingImages] = useState<Array<{ id: string; url: string; alt: string }>>([]);
+  const [existingImages, setExistingImages] = useState<Array<{ id: string; url: string; alt: string; isAiGenerated?: boolean }>>([]);
   const [collections, setCollections] = useState<CollectionOption[]>([]);
+  const [pipelineStatus, setPipelineStatus] = useState<{ pipelineStatus: string; pipelineError: string | null; aiColor: string | null; aiType: string | null; aiDescription: string | null } | null>(null);
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [reprocessing, setReprocessing] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -53,6 +55,16 @@ export default function AdminShirtEditPage() {
       .then((data) => setCollections(data.collections))
       .catch(() => {});
   }, [token]);
+
+  useEffect(() => {
+    if (isNew || !token) return;
+    apiFetch<{ pipelineStatus: string; pipelineError: string | null; aiColor: string | null; aiType: string | null; aiDescription: string | null }>(
+      `/admin/shirts/${id}/pipeline-status`,
+      { token },
+    )
+      .then(setPipelineStatus)
+      .catch(() => {});
+  }, [id, isNew, token]);
 
   useEffect(() => {
     if (isNew || !token) {
@@ -147,6 +159,19 @@ export default function AdminShirtEditPage() {
       setError('Erro ao salvar camisa');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleReprocess() {
+    if (!token) return;
+    setReprocessing(true);
+    try {
+      await apiFetch(`/admin/shirts/${id}/reprocess`, { method: 'POST', token });
+      setPipelineStatus((prev) => prev ? { ...prev, pipelineStatus: 'processing', pipelineError: null } : prev);
+    } catch {
+      setError('Erro ao reprocessar pipeline');
+    } finally {
+      setReprocessing(false);
     }
   }
 
@@ -333,6 +358,78 @@ export default function AdminShirtEditPage() {
           </button>
         </div>
       </form>
+
+      {/* AI Pipeline Section */}
+      {!isNew && pipelineStatus && (
+        <div className="max-w-2xl space-y-4 rounded-lg bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-primary">Pipeline IA</h2>
+            <button
+              onClick={handleReprocess}
+              disabled={reprocessing || pipelineStatus.pipelineStatus === 'processing'}
+              className="rounded border border-accent px-4 py-1.5 text-sm font-medium text-accent hover:bg-accent/10 disabled:opacity-50"
+            >
+              {reprocessing ? 'Enviando...' : 'Reprocessar'}
+            </button>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-primary-light">Status:</span>
+            <span
+              className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                pipelineStatus.pipelineStatus === 'complete'
+                  ? 'bg-green-100 text-green-700'
+                  : pipelineStatus.pipelineStatus === 'processing'
+                    ? 'bg-blue-100 text-blue-700 animate-pulse'
+                    : pipelineStatus.pipelineStatus === 'failed'
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-yellow-100 text-yellow-700'
+              }`}
+            >
+              {pipelineStatus.pipelineStatus === 'complete' ? 'Completo' : pipelineStatus.pipelineStatus === 'processing' ? 'Processando' : pipelineStatus.pipelineStatus === 'failed' ? 'Falhou' : 'Pendente'}
+            </span>
+          </div>
+
+          {pipelineStatus.pipelineError && (
+            <p className="text-sm text-red-600">Erro: {pipelineStatus.pipelineError}</p>
+          )}
+
+          {pipelineStatus.pipelineStatus === 'complete' && (
+            <div className="space-y-2 border-t pt-4">
+              <h3 className="text-sm font-medium text-primary-light">Resultados da análise IA</h3>
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="text-primary-light">Tipo:</span>{' '}
+                  <span className="font-medium capitalize">{pipelineStatus.aiType ?? '—'}</span>
+                </div>
+                <div>
+                  <span className="text-primary-light">Cor:</span>{' '}
+                  <span className="font-medium capitalize">{pipelineStatus.aiColor ?? '—'}</span>
+                </div>
+              </div>
+              {pipelineStatus.aiDescription && (
+                <p className="text-sm text-primary-light italic">{pipelineStatus.aiDescription}</p>
+              )}
+
+              {/* AI-generated images */}
+              {existingImages.filter((img) => img.isAiGenerated).length > 0 && (
+                <div className="border-t pt-4">
+                  <h3 className="mb-2 text-sm font-medium text-primary-light">Fotos com modelo (IA)</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {existingImages
+                      .filter((img) => img.isAiGenerated)
+                      .map((img) => (
+                        <div key={img.id} className="relative h-32 w-32 overflow-hidden rounded border">
+                          <img src={`${apiBase}${img.url}`} alt={img.alt} className="h-full w-full object-cover" />
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
