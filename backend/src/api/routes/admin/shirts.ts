@@ -21,7 +21,7 @@ adminShirtsRouter.get('/shirts', async (req, res, next) => {
 adminShirtsRouter.post('/shirts', upload.array('images', 10), async (req, res, next) => {
   try {
     const files = req.files as Express.Multer.File[];
-    const { name, description, price, sizes, color, category } = req.body;
+    const { name, description, price, sizes, color, category, collectionId } = req.body;
 
     if (!files || files.length === 0) {
       res.status(400).json({ error: 'At least one image is required', code: 'VALIDATION_ERROR' });
@@ -35,6 +35,7 @@ adminShirtsRouter.post('/shirts', upload.array('images', 10), async (req, res, n
       sizes: Array.isArray(sizes) ? sizes : JSON.parse(sizes),
       color,
       category,
+      collectionId: collectionId || undefined,
       images: files.map((f, i) => ({
         buffer: f.buffer,
         mimeType: f.mimetype,

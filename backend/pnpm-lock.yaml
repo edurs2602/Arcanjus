@@ -14,9 +14,6 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.700.0
         version: 3.1048.0
-      '@prisma/client':
-        specifier: ^6.0.0
-        version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
@@ -42,6 +39,9 @@ importers:
       '@eslint/js':
         specifier: ^9.0.0
         version: 9.39.4
+      '@prisma/client':
+        specifier: ^6.19.3
+        version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)
       '@types/bcrypt':
         specifier: ^5.0.2
         version: 5.0.2
@@ -73,7 +73,7 @@ importers:
         specifier: ^3.4.0
         version: 3.8.3
       prisma:
-        specifier: ^6.0.0
+        specifier: ^6.19.3
         version: 6.19.3(typescript@5.9.3)
       supertest:
         specifier: ^7.0.0

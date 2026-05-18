@@ -8,6 +8,7 @@ interface CreateShirtInput {
   sizes: string[];
   color: string;
   category: string;
+  collectionId?: string;
   images: Array<{ buffer: Buffer; mimeType: string; alt: string }>;
 }
 
@@ -18,6 +19,7 @@ interface UpdateShirtInput {
   sizes?: string[];
   color?: string;
   category?: string;
+  collectionId?: string | null;
   active?: boolean;
 }
 
@@ -79,6 +81,7 @@ export async function createShirt(input: CreateShirtInput) {
       sizes: input.sizes,
       color: input.color,
       category: input.category,
+      collectionId: input.collectionId || null,
       images: { create: imageUrls },
     },
     include: { images: true },

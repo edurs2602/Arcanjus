@@ -4,13 +4,14 @@ interface ListShirtsParams {
   category?: string;
   color?: string;
   size?: string;
+  collection?: string;
   sort?: 'price_asc' | 'price_desc' | 'newest';
   page?: number;
   limit?: number;
 }
 
 export async function listShirts(params: ListShirtsParams) {
-  const { category, color, size, sort = 'newest', page = 1, limit = 20 } = params;
+  const { category, color, size, collection, sort = 'newest', page = 1, limit = 20 } = params;
   const take = Math.min(limit, 50);
   const skip = (page - 1) * take;
 
@@ -19,6 +20,7 @@ export async function listShirts(params: ListShirtsParams) {
     ...(category && { category }),
     ...(color && { color }),
     ...(size && { sizes: { has: size } }),
+    ...(collection && { collectionId: collection }),
   };
 
   const orderBy = {
@@ -82,6 +84,7 @@ export async function getShirtById(id: string) {
     color: shirt.color,
     category: shirt.category,
     sizes: shirt.sizes,
+    collectionId: shirt.collectionId,
     images: shirt.images.map((img) => ({
       id: img.id,
       url: img.url,

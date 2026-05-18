@@ -37,7 +37,7 @@
 **CRITICAL**: No user story work can begin until this phase is complete
 
 - [x] T010 Create Prisma schema with all entities (Shirt, ShirtImage, StoreInfo, AdminUser, PageViewEvent, ProductClickEvent) in backend/prisma/schema.prisma
-- [ ] T011 Generate and run initial Prisma migration in backend/prisma/migrations/
+- [x] T011 Generate and run initial Prisma migration in backend/prisma/migrations/
 - [x] T012 [P] Create Express app with structured JSON logging middleware in backend/src/app.ts
 - [x] T013 [P] Create environment config loader with validation in backend/src/config/env.ts
 - [x] T014 [P] Create Prisma client singleton in backend/src/config/database.ts
@@ -173,7 +173,7 @@
 - [x] T078 [P] [US-Admin] Create admin layout with sidebar navigation in frontend/src/app/admin/layout.tsx
 - [x] T079 [US-Admin] Create admin dashboard page with analytics overview in frontend/src/app/admin/page.tsx
 - [x] T080 [US-Admin] Create shirt list page with table and actions in frontend/src/app/admin/camisas/page.tsx
-- [ ] T081 [US-Admin] Create shirt create/edit form with image upload in frontend/src/app/admin/camisas/[id]/page.tsx
+- [x] T081 [US-Admin] Create shirt create/edit form with image upload in frontend/src/app/admin/camisas/[id]/page.tsx
 - [x] T082 [US-Admin] Create store info edit page in frontend/src/app/admin/loja/page.tsx
 - [x] T083 [US-Admin] Create analytics detail page with charts per shirt in frontend/src/app/admin/analytics/page.tsx
 

@@ -13,8 +13,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'Arcanjus - Camisas',
-  description: 'Arcanjus - Loja de camisas com estilo e qualidade',
+  title: 'ARCANJUS — Camisas de Excelência',
+  description: 'Elegância atemporal em cada detalhe. Camisas feitas com tecidos nobres para quem valoriza o requinte e a qualidade incomparável.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

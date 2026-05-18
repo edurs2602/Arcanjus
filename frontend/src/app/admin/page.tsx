@@ -19,7 +19,10 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     apiFetch<OverviewData>('/admin/analytics/overview', { token })
       .then(setData)
       .catch(console.error)

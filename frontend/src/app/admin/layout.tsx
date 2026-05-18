@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { AdminAuthProvider, useAdminAuth } from '@/lib/adminAuth';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: '📊' },
   { href: '/admin/camisas', label: 'Camisas', icon: '👕' },
+  { href: '/admin/colecoes', label: 'Coleções', icon: '🎨' },
   { href: '/admin/loja', label: 'Loja', icon: '🏪' },
   { href: '/admin/analytics', label: 'Analytics', icon: '📈' },
 ];
@@ -14,13 +15,15 @@ const navItems = [
 function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const { user, logout, isLoading } = useAdminAuth();
   const pathname = usePathname();
+  const router = useRouter();
 
   if (isLoading) {
     return <div className="flex min-h-screen items-center justify-center">Carregando...</div>;
   }
 
   if (!user && pathname !== '/admin/login') {
-    return <>{children}</>;
+    router.replace('/admin/login');
+    return <div className="flex min-h-screen items-center justify-center">Redirecionando...</div>;
   }
 
   if (pathname === '/admin/login') {

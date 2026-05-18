@@ -4,6 +4,41 @@
 
 @layer base {
   body {
-    @apply bg-white text-primary antialiased;
+    @apply bg-brand-50 text-primary antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent/20 text-primary;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .luxury-container {
+    @apply mx-auto w-full max-w-[1400px] px-6 md:px-10 lg:px-16;
+  }
+
+  .luxury-heading {
+    @apply font-display text-3xl font-normal tracking-tight text-primary md:text-4xl lg:text-5xl;
+  }
+
+  .luxury-subheading {
+    @apply text-xs font-medium uppercase tracking-widest-xl text-primary-light;
+  }
+
+  .luxury-button {
+    @apply inline-block border border-primary bg-primary px-10 py-4 text-xs font-medium uppercase tracking-widest-xl text-white transition-all duration-300 hover:bg-transparent hover:text-primary;
+  }
+
+  .luxury-button-outline {
+    @apply inline-block border border-primary px-10 py-4 text-xs font-medium uppercase tracking-widest-xl text-primary transition-all duration-300 hover:bg-primary hover:text-white;
+  }
+
+  .luxury-divider {
+    @apply mx-auto my-12 h-px w-16 bg-accent;
   }
 }

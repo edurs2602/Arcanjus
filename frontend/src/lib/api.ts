@@ -1,4 +1,9 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+const CLIENT_API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+const SERVER_API_BASE = process.env.INTERNAL_API_URL ?? CLIENT_API_BASE;
+
+function getApiBase() {
+  return typeof window === 'undefined' ? SERVER_API_BASE : CLIENT_API_BASE;
+}
 
 interface FetchOptions extends RequestInit {
   token?: string;
@@ -27,7 +32,7 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
     (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(`${getApiBase()}${path}`, {
     ...fetchOptions,
     headers,
   });

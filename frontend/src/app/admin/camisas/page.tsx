@@ -21,7 +21,10 @@ export default function AdminCamisasPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     apiFetch<{ shirts: ShirtItem[] }>('/admin/shirts', { token })
       .then((data) => setShirts(data.shirts))
       .catch(console.error)

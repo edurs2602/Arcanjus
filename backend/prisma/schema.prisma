@@ -7,23 +7,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Shirt {
-  id          String       @id @default(uuid())
-  name        String       @db.VarChar(200)
-  description String       @db.Text
-  price       Decimal      @db.Decimal(10, 2)
-  sizes       String[]
-  color       String
-  category    String
-  active      Boolean      @default(true)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+model Collection {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(200)
+  description String?  @db.Text
+  bannerUrl   String
+  bannerAlt   String   @default("")
+  active      Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
+  shirts Shirt[]
+
+  @@index([active, order])
+}
+
+model Shirt {
+  id           String       @id @default(uuid())
+  name         String       @db.VarChar(200)
+  description  String       @db.Text
+  price        Decimal      @db.Decimal(10, 2)
+  sizes        String[]
+  color        String
+  category     String
+  active       Boolean      @default(true)
+  collectionId String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  collection  Collection?  @relation(fields: [collectionId], references: [id], onDelete: SetNull)
   images      ShirtImage[]
   clicks      ProductClickEvent[]
 
   @@index([active, category])
   @@index([active, color])
+  @@index([collectionId])
 }
 
 model ShirtImage {

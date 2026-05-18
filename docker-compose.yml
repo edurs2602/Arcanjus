@@ -48,6 +48,7 @@ services:
       - ./frontend/public:/app/public
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
+      INTERNAL_API_URL: http://backend:3001/api/v1
     depends_on:
       - backend
     command: pnpm dev

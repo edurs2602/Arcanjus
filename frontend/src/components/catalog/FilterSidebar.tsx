@@ -34,15 +34,20 @@ export function FilterSidebar({ categories, colors, sizes }: FilterSidebarProps)
   const hasActiveFilters = activeCategory || activeColor || activeSize;
 
   return (
-    <aside className="w-full space-y-6 rounded-lg border border-brand-200 p-4 md:w-64">
+    <aside className="w-full space-y-8 md:w-56 lg:w-64">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-primary">Filtros</h2>
+        <h2 className="text-[10px] font-medium uppercase tracking-widest-xl text-primary">Filtrar</h2>
         {hasActiveFilters && (
-          <button onClick={clearFilters} className="text-xs text-accent hover:underline">
+          <button
+            onClick={clearFilters}
+            className="text-[10px] uppercase tracking-widest-xl text-primary-light transition-colors hover:text-primary"
+          >
             Limpar
           </button>
         )}
       </div>
+
+      <div className="h-px bg-brand-200" />
 
       <FilterGroup
         label="Categoria"
@@ -81,19 +86,26 @@ function FilterGroup({
 }) {
   return (
     <div>
-      <h3 className="mb-2 text-xs font-medium uppercase text-primary-light">{label}</h3>
-      <div className="flex flex-wrap gap-2">
+      <h3 className="mb-4 text-[10px] font-medium uppercase tracking-widest-xl text-primary-light">{label}</h3>
+      <div className="flex flex-col gap-2">
         {options.map((option) => (
           <button
             key={option}
             onClick={() => onChange(active === option ? '' : option)}
-            className={`rounded-full px-3 py-1 text-xs transition-colors ${
+            className={`text-left text-sm transition-colors duration-200 ${
               active === option
-                ? 'bg-accent text-white'
-                : 'bg-brand-100 text-primary-light hover:bg-brand-200'
+                ? 'font-medium text-primary'
+                : 'text-primary-light hover:text-primary'
             }`}
           >
-            {option}
+            <span className="flex items-center gap-2">
+              <span className={`inline-block h-2 w-2 rounded-full border transition-colors ${
+                active === option
+                  ? 'border-accent bg-accent'
+                  : 'border-brand-300 bg-transparent'
+              }`} />
+              <span className="capitalize">{option}</span>
+            </span>
           </button>
         ))}
       </div>

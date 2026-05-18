@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { requireAuth } from '../../middleware/auth.js';
 import { adminAuthRouter } from './auth.js';
 import { adminShirtsRouter } from './shirts.js';
+import { adminCollectionsRouter } from './collections.js';
 import { adminStoreInfoRouter } from './storeInfo.js';
 import { adminAnalyticsRouter } from './analytics.js';
 
@@ -13,5 +14,6 @@ adminRouter.use(adminAuthRouter);
 // All other admin routes require auth
 adminRouter.use(requireAuth);
 adminRouter.use(adminShirtsRouter);
+adminRouter.use(adminCollectionsRouter);
 adminRouter.use(adminStoreInfoRouter);
 adminRouter.use(adminAnalyticsRouter);
